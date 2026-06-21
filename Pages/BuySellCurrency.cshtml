@@ -1,0 +1,111 @@
+﻿@page
+@model CurrencyExchangeApp.Pages.BuySellCurrencyModel
+@{
+    ViewData["Title"] = "Currency Exchange Office";
+}
+
+<h2 class="mb-4">Your Wallet</h2>
+
+@if (!Model.Wallets.Any())
+{
+    <p>No wallet data available.</p>
+}
+else
+{
+    <ul class="list-group mb-4">
+        @foreach (var wallet in Model.Wallets)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <span><strong>@wallet.Currency</strong></span>
+                <span>@wallet.Balance</span>
+            </li>
+        }
+    </ul>
+}
+
+<hr />
+
+<h2>Buy or Sell Currency</h2>
+
+<form method="post" class="mt-4">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label asp-for="Transaction.Type" class="form-label">Transaction Type</label>
+            <select asp-for="Transaction.Type" class="form-select">
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Transaction.Currency" class="form-label">Currency</label>
+            <select asp-for="Transaction.Currency" class="form-select">
+                <option value="EUR">EUR</option>
+                <option value="PLN">PLN</option>
+                <option value="GBP">GBP</option>
+                <option value="CHF">CHF</option>
+                <option value="JPY">JPY</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label asp-for="Transaction.Amount" class="form-label">Amount</label>
+            <input asp-for="Transaction.Amount" class="form-control" type="number" step="0.01" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">Submit</button>
+        </div>
+    </div>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
+<hr />
+
+<h3>Transaction History</h3>
+
+@if (!Model.AllTransactions.Any())
+{
+    <p>No transactions yet.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Currency</th>
+                <th>Amount</th>
+                <th>Rate</th>
+                <th>Total PLN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tx in Model.AllTransactions)
+            {
+                <tr>
+                    <td>@tx.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@tx.Type</td>
+                    <td>@tx.Currency</td>
+                    <td>@tx.Amount</td>
+                    <td>@tx.Rate</td>
+                    <td>@tx.TotalPLN</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form method="post" asp-page-handler="ClearHistory">
+        <button type="submit" class="btn btn-danger mt-3">Clear All Transactions</button>
+    </form>
+}

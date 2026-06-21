@@ -1,0 +1,22 @@
+﻿@page
+@model CurrencyExchangeApp.Pages.FetchRateModel
+@{
+    ViewData["Title"] = "Fetch Currency Rate";
+}
+
+<h2>Fetch Currency Rate</h2>
+
+<form method="post">
+    <label>Enter Currency Code (e.g., USD, EUR):</label><br />
+    <input type="text" asp-for="CurrencyCode" />
+    <button type="submit">Fetch & Save</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert @(Model.Message.Contains("❌") ? "alert-danger" : "alert-success")">
+        @Model.Message
+    </div>
+}
+
+

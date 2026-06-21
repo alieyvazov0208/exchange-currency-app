@@ -1,0 +1,45 @@
+﻿@page
+@model CurrencyExchangeApp.Pages.LiveRatesModel
+@{
+    ViewData["Title"] = "Live Exchange Rates";
+
+    var flagMap = new Dictionary<string, string>
+    {   
+        { "USD", "us" },
+        { "EUR", "eu" },
+        { "GBP", "gb" },
+        { "CHF", "ch" },
+        { "JPY", "jp" },
+        { "PLN", "pl" }
+    };
+}
+
+<h2>Live Exchange Rates</h2>
+
+@if (Model.LiveCurrencyRates.Count == 0)
+{
+    <p>Unable to fetch live exchange rates. Please try again later.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var rate in Model.LiveCurrencyRates)
+        {
+            var flag = flagMap.ContainsKey(rate.CurrencyCode) ? flagMap[rate.CurrencyCode] : "un";
+            var flagUrl = $"https://flagcdn.com/24x18/{flag}.png";
+
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex align-items-center">
+                            <img src="@flagUrl" class="me-2" alt="@rate.CurrencyCode flag" />
+                            @rate.CurrencyCode
+                        </h5>
+                        <p class="card-text">Rate: <strong>@rate.Rate</strong></p>
+                        <p class="card-text">Date: @rate.DateFetched.ToShortDateString()</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

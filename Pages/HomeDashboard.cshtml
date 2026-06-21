@@ -1,0 +1,79 @@
+﻿@page
+@model CurrencyExchangeApp.Pages.HomeDashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="text-center">
+        <h2>Hello, @Model.UserName! 👋</h2>
+        <p class="lead">Welcome to your Currency Dashboard</p>
+    </div>
+
+    <div class="card my-4">
+        <div class="card-body text-center">
+            <h4>Your Total PLN Balance</h4>
+            <h2 class="text-success">@Model.TotalBalancePLN.ToString("0.00") PLN</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Your Wallet</h4>
+            <ul class="list-group">
+                @foreach (var wallet in Model.Wallets)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>@wallet.Currency</strong>
+                        <span>@wallet.Balance.ToString("0.00")</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+        <div class="p-3 bg-white rounded shadow-sm">
+            <h4>Exchange Trends</h4>
+            <canvas id="rateChart" width="100%" height="80"></canvas>
+        </div>
+</div>
+
+    </div>
+
+    <div class="mt-4 text-center">
+        <a class="btn btn-primary me-2" asp-page="/ConvertToPLN">💱 Convert Currency</a>
+        <a class="btn btn-success me-2" asp-page="/BuySellCurrency">📈 Trade Now</a>
+        <a class="btn btn-secondary" asp-page="/BuySellCurrency">📜 View History</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = @Html.Raw(Model.RateLabelsJson);
+        const dataValues = @Html.Raw(Model.RateValuesJson);
+
+        const ctx = document.getElementById('rateChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'EUR Rate (last 5 days)',
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    data: dataValues,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
+}

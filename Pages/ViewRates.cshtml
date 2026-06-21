@@ -1,0 +1,34 @@
+﻿@page
+@model CurrencyExchangeApp.Pages.ViewRatesModel
+@{
+    ViewData["Title"] = "Saved Exchange Rates";
+}
+
+<h2>Saved Exchange Rates</h2>
+
+@if (Model.Rates.Count == 0)
+{
+    <p>No exchange rates found. Try <a href="/FetchRate">adding one</a>.</p>
+}
+else
+{
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Currency</th>
+                <th>Rate</th>
+                <th>Date Fetched</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rate in Model.Rates)
+            {
+                <tr>
+                    <td>@rate.CurrencyCode</td>
+                    <td>@rate.Rate</td>
+                    <td>@rate.DateFetched.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
